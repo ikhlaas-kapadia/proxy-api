@@ -37,13 +37,13 @@ router.get('/', limiter, async (req, res, next) => {
   //  1 - Make a request to rapid api
   try {
     const response = await axios.request(options);
-    const { data } = await response.data;
-    // console.log(result);
+    const { data } = await response;
+    // console.log(data);
     //  2 - Respond to incoming request from front end with response from rapid api
-    cachedData = { data };
+    cachedData = data;
     cacheTime = Date.now();
     data.cacheTime = cacheTime;
-    return res.json({ data });
+    return res.json(data);
   } catch (error) {
     return next(error);
   }
