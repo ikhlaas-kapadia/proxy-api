@@ -10,6 +10,8 @@ const middlewares = require('./middlewares');
 const api = require('./api');
 
 const app = express();
+// Required to use rate limiter when deployed
+app.set('trust proxy', 1);
 
 app.use(morgan('dev'));
 app.use(helmet());
@@ -23,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 // api is mounted to this url
-app.use('/api/v1', api);
+app.use('/cryptoworld', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
