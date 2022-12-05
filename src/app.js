@@ -2,8 +2,10 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const path = require('path');
 
 // Usually the dotenv function looks in the same directory for .env file but you can specify the path
+
 require('dotenv').config();
 
 const middlewares = require('./middlewares');
@@ -18,12 +20,12 @@ app.use(express.json());
 app.set('trust proxy', 1);
 app.get('/', (req, res) => {
   res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄'
+    message: 'Type in endpoint'
   });
 });
 
 // api is mounted to this url
-app.use('/api/v1', api);
+app.use('/cryptoapi', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

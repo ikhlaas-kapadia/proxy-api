@@ -8,11 +8,11 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   res.json({
-    message: 'API - 👋🌎🌍🌏'
+    message: 'CryptoAPI - Home endpoint👋🌎🌍🌏'
   });
 });
 
 router.use('/emojis', emojis);
-router.use('/cryptos', crypto);
+router.use('/', crypto);
 
 module.exports = router;
