@@ -7,7 +7,6 @@ const path = require('path');
 // Usually the dotenv function looks in the same directory for .env file but you can specify the path
 
 require('dotenv').config();
-
 const middlewares = require('./middlewares');
 const api = require('./api');
 

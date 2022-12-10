@@ -49,12 +49,12 @@ router.get('/stats', limiter, async (req, res, next) => {
     data.cacheTimeStats = cacheTimeStats;
     return res.json(data);
   } catch (error) {
-    return next(error);
+    return next(error.response.data);
   }
-  // fetchData().then((data) => { res.json({ response: data }); });
 });
 
 router.get('/coins', limiter, async (req, res, next) => {
+
   const options = {
     method: 'GET',
     url: `${baseURL}/coins`,
@@ -62,6 +62,7 @@ router.get('/coins', limiter, async (req, res, next) => {
       'x-access-token': process.env.RAPID_API_KEY
     }
   };
+
   // In memory cache to reduce the number of requests. For larger application better to store on db
   if (cacheTimeCoins && cacheTimeCoins > Date.now() - 30 * 1000) {
     cachedDataCoins.isCached = 'true';
@@ -78,11 +79,65 @@ router.get('/coins', limiter, async (req, res, next) => {
     data.cacheTimeCoins = cacheTimeCoins;
     return res.json(data);
   } catch (error) {
-    return next(error);
+    return next(error.response.data);
+  }
+});
+
+router.get('/coin/:uuid', limiter, async (req, res, next) => {
+  const { params:paramsObject } = req;
+  const { uuid } = paramsObject;
+
+  console.log(uuid);
+
+  const options = {
+    method: 'GET',
+    url: `${baseURL}/coin/${uuid}`,
+    headers: {
+      'x-access-token': process.env.RAPID_API_KEY
+    }
+  };
+
+  //  1 - Make a request to rapid api
+  try {
+    const response = await axios.request(options);
+    const { data } = await response;
+    // console.log(data);
+    //  2 - Respond to incoming request from front end with response from rapid api
+    return res.json(data);
+  } catch (error) {
+    return next(error.response.data);
   }
   // fetchData().then((data) => { res.json({ response: data }); });
 });
 
+router.get('/coin/:uuid/history', limiter, async (req, res, next) => {
+  const { params:paramsObject, query:queryObject } = req;
+  const { uuid } = paramsObject;
+  const { timePeriod } = queryObject;
+  let queryString = ''
+  if(timePeriod) {
+    queryString = `?timePeriod=${timePeriod}`;
+  }
+
+  const options = {
+    method: 'GET',
+    url: `${baseURL}/coin/${uuid}/history${queryString}`,
+    headers: {
+      'x-access-token': process.env.RAPID_API_KEY
+    }
+  };
+
+  //  1 - Make a request to rapid api
+  try {
+    const response = await axios.request(options);
+    const { data } = await response;
+    console.log(data.data.history.length);
+    //  2 - Respond to incoming request from front end with response from rapid api
+    return res.json(data);
+  } catch (error) {
+    return next(error.response.data);
+  }
+});
 
 
 
